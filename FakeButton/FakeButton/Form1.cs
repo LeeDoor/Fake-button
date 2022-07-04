@@ -18,7 +18,7 @@ namespace FakeButton
         private double GetDistance (Point point, Control control)
         {
             Point point2 = GetControlMidpoint(control);
-            Point distance = GetVector(point, point2);
+            Vector distance = GetVector(point, point2).Module();
             return Math.Sqrt(Math.Pow(distance.X,2) + Math.Pow(distance.Y, 2));
         }
 
@@ -30,12 +30,12 @@ namespace FakeButton
                 Y = control.Location.Y + control.Height / 2
             };
         }
-        private Point GetVector(Point point, Point point2)
+        private Vector GetVector(Point point, Point point2)
         {
-            return new Point()
+            return new Vector()
             {
-                X = Math.Abs(point.X - point2.X), 
-                Y = Math.Abs(point.Y - point2.Y)
+                X = point.X - point2.X, 
+                Y = point.Y - point2.Y
             };
         }
 
@@ -51,26 +51,16 @@ namespace FakeButton
 
         private void MoveOutwards(Control control)
         {
-            Point backVector = GetVector(GetControlMidpoint(control), InMousePosition);
-            InvertVector(backVector);
+            Vector backVector = GetVector(GetControlMidpoint(control), InMousePosition); //;/.Invert();
             ApplyMovement(control, backVector);
         }
 
-        private Point InvertVector (Point point)
-        {
-            return new Point()
-            {
-                X = -point.X,
-                Y = -point.Y
-            };
-        }
-
-        private void ApplyMovement(Control control, Point vector)
+        private void ApplyMovement(Control control, Vector vector)
         {
             control.Location = new Point()
             {
-                X = control.Location.X + vector.X,
-                Y = control.Location.Y + vector.Y
+                X = control.Location.X + (int)vector.X,
+                Y = control.Location.Y + (int)vector.Y
             };
         }
 
