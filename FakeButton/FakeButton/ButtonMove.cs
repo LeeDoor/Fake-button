@@ -35,14 +35,13 @@ namespace FakeButton
         public void MoveOutwards()
 		{
 			if (GetDistance(form.InMousePosition) > reacDist)
-			{
 				return;
-			}
-			MovingPattern pattern;
+
 			Vector moving;
 			if (VecToClosestBorder(out Vector vectorA))
             {
-				Vector vectorB = Vector.GetVector(Midpoint, form.InMousePosition);
+				vectorA.Normalize();
+				Vector vectorB = Vector.GetVector(Midpoint, form.InMousePosition).Normalize();
 				moving = (vectorA + vectorB).Invert();
             }
             else
@@ -113,10 +112,10 @@ namespace FakeButton
 			Rectangle border = form.ButtonBorder;
 			Point midpoint = Midpoint;
 
-			distances.Add(new Vector(0, midpoint.Y - border.Y));
+			distances.Add(new Vector(0, border.Y - midpoint.Y));
 			distances.Add(new Vector(border.X + border.Width - midpoint.X, 0));
 			distances.Add(new Vector(0, border.Y + border.Height - midpoint.Y));
-			distances.Add(new Vector(midpoint.X - border.X, 0));
+			distances.Add(new Vector(border.X - midpoint.X, 0));
 
 			res = distances.OrderBy(n=>n.Length).First();
 

@@ -44,6 +44,8 @@ namespace FakeButton
 		private void OnMouseMove(object sender, MouseEventArgs e)
 		{
 			buttonMove.MoveOutwards();
+			RightButton.Enabled = false;
+			queLabel.Enabled = false;
 		}
 
 		/// <summary>
