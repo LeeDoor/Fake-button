@@ -24,6 +24,8 @@ namespace FakeButton
 		/// </summary>
 		private ButtonMove buttonMove;
 
+		private bool drawGui = false;
+
 		/// <summary>
 		/// constructor
 		/// </summary>
@@ -58,6 +60,7 @@ namespace FakeButton
 		/// <param name="e"></param>
 		private void OnForm1Paint(object sender, PaintEventArgs e)
 		{
+			if (!drawGui) return;
 			e.Graphics.Clear(Color.White);
 			e.Graphics.DrawEllipse(Pens.Red, new Rectangle(
 				WrongButton.Location.X + WrongButton.Width/2 -  (int)buttonMove.reacDist,
@@ -80,5 +83,29 @@ namespace FakeButton
 			buttonMove.MoveOutwards();
 
 		}
+
+		/// <summary>
+		/// if you still manage to click
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnWrongButtonClick(object sender, EventArgs e)
+        {
+			MessageBox.Show("у меня ниразу не получилось вызвать это окно, значит работает");
+        }
+
+		/// <summary>
+		/// you can press right mouse button to show hitbox gui
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+        private void OnMouseClick(object sender, MouseEventArgs e)
+        {
+			if(e.Button == MouseButtons.Right)
+            {
+				drawGui = !drawGui;
+				Invalidate();
+            }
+        }
     }
 }

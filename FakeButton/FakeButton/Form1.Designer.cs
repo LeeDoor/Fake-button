@@ -67,6 +67,7 @@
             this.WrongButton.TabIndex = 1;
             this.WrongButton.Text = "Baiden";
             this.WrongButton.UseVisualStyleBackColor = false;
+            this.WrongButton.Click += new System.EventHandler(this.OnWrongButtonClick);
             this.WrongButton.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnWrongButtonMouseMove);
             // 
             // Form1
@@ -83,6 +84,7 @@
             this.Name = "Form1";
             this.Text = "questionary";
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.OnForm1Paint);
+            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnMouseClick);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
             this.ResumeLayout(false);
             this.PerformLayout();
