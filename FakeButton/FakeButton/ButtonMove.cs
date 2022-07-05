@@ -56,15 +56,21 @@ namespace FakeButton
 			if (GetDistance(form.InMousePosition) > reacDist)
 				return;
 
-			Vector moving;
-			if (VecToClosestBorder(out Vector vectorA))
-            {
+			Vector moving; // moving vector
+			if (VecToClosestBorder(out Vector vectorA)) 
+            { // if there is border near button 
+			  // the vector of the direction of movement is equal
+			  // to the inverted sum of the vectors from the button
+			  // to the cursor and to the nearest border
+			  // copied from yandex.translate
 				vectorA.Normalize();
 				Vector vectorB = Vector.GetVector(Midpoint, form.InMousePosition).Normalize();
 				moving = (vectorA + vectorB).Invert();
             }
             else
-            {
+            {	//if there are no map borders nearby,
+				//the direction vector is equal to the
+				//inverted vector from the button to the cursor
 				moving = Vector.GetVector(Midpoint, form.InMousePosition).Invert() / 2;
             }
 			ApplyMovement(moving);
