@@ -5,11 +5,11 @@ namespace FakeButton
 		/// <summary>
 		/// property gets position of mouse inside windows form
 		/// </summary>
-		public Point InMousePosition { get => new Point 
-		{ 
-			X = MousePosition.X - Location.X - 5, 
-			Y = MousePosition.Y - Location.Y -30
-		}; 
+		public Point InMousePosition { get => new Point
+		{
+			X = MousePosition.X - Location.X - 5,
+			Y = MousePosition.Y - Location.Y - 30
+		};
 		}
 
 		/// <summary>
@@ -55,6 +55,7 @@ namespace FakeButton
 				var point = GetClosestBorderPoint(side.Value, control);
 				ApplyMovement(control, Vector.GetVector(GetControlMidpoint(control), point));
 			}
+			this.Invalidate();
 		}
 
 		/// <summary>
@@ -66,9 +67,15 @@ namespace FakeButton
 		/// <returns>returns far point</returns>
 		private Point GetClosestBorderPoint(FormSides side, Control control, int space = 0)
 		{
+			if (space >= reacDist/2)
+				return new Point()
+				{
+					X = Width / 2,
+					Y = Height / 2
+				};
 			Point point = new();
-            switch (side)
-            {
+			switch (side)
+			{
 				case FormSides.Left:
 					point = new Point()
 					{
@@ -77,10 +84,25 @@ namespace FakeButton
 					};
 					break;
 				case FormSides.Right:
+					point = new Point()
+					{
+						X = this.Width,
+						Y = control.Location.Y + space
+					};
 					break;
 				case FormSides.Bottom:
+					point = new Point()
+					{
+						X = control.Location.X + space,
+						Y = this.Height
+					};
 					break;
 				case FormSides.Top:
+					point = new Point()
+					{
+						X = control.Location.X + space,
+						Y = 0
+					};
 					break;
 
 			}
@@ -172,6 +194,16 @@ namespace FakeButton
 
 		}
 
-
-	}
+		private void OnForm1Paint(object sender, PaintEventArgs e)
+		{
+			e.Graphics.Clear(Color.White);
+			e.Graphics.DrawEllipse(Pens.Red, new Rectangle(
+				WrongButton.Location.X + WrongButton.Width/2 - (int)reacDist,
+				WrongButton.Location.Y + WrongButton.Height/2 - (int)reacDist,
+				(int)reacDist*2,
+				(int)reacDist*2
+				)
+			);
+        }
+    }
 }
