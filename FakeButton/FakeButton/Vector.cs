@@ -21,10 +21,13 @@ namespace FakeButton
 		/// </summary>
 		public double Y { get; set; }
 
+		/// <summary>
+		/// property returns length of vector
+		/// </summary>
 		public double Length { get => Math.Sqrt(Math.Pow(Math.Abs(X), 2) + Math.Pow(Math.Abs(Y), 2)); }
 
 		/// <summary>
-		/// ctor
+		/// constructor
 		/// </summary>
 		/// <param name="x">x coord</param>
 		/// <param name="y">y coord</param>
@@ -59,6 +62,18 @@ namespace FakeButton
 		}
 
 		/// <summary>
+		/// function normalize vector
+		/// </summary>
+		/// <returns>returns itself</returns>
+		public Vector Normalize()
+		{
+			double inc = 100 / (Math.Abs(X) + Math.Abs(Y));
+			X *= inc;
+			Y *= inc;
+			return this;
+		}
+
+		/// <summary>
 		/// gets vector between two points
 		/// </summary>
 		/// <param name="point">first point</param>
@@ -73,17 +88,20 @@ namespace FakeButton
 			};
 		}
 
-		public static Vector operator +(Vector a, Vector b)
+        #region overrided operators
+        public static Vector operator +(Vector a, Vector b)
 		{
 			return new Vector(a.X + b.X, a.Y + b.Y);
 		}
-
-		public Vector Normalize()
+		public static Vector operator *(Vector a, int b)
 		{
-			double inc = 100 /( Math.Abs(X) + Math.Abs(Y));
-			X*= inc;
-			Y*= inc;
-			return this;
+			return new Vector(a.X * b, a.Y * b);
 		}
+		public static Vector operator /(Vector a, int b)
+		{
+			return new Vector(a.X / b, a.Y / b);
+		}
+		#endregion
+
 	}
 }

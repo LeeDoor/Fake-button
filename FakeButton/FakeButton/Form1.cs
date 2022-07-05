@@ -14,6 +14,9 @@ namespace FakeButton
 			};
 		}
 
+		/// <summary>
+		/// button border property to get rectangle field
+		/// </summary>
 		public Rectangle ButtonBorder { get; private set; }
 
 		/// <summary>
@@ -22,7 +25,7 @@ namespace FakeButton
 		private ButtonMove buttonMove;
 
 		/// <summary>
-		/// ctor
+		/// constructor
 		/// </summary>
 		public Form1()
 		{
@@ -66,5 +69,16 @@ namespace FakeButton
 
 			e.Graphics.DrawRectangle(Pens.Green, ButtonBorder);
         }
+
+		/// <summary>
+		/// activates then mouse is on button
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+        private void OnWrongButtonMouseMove(object sender, MouseEventArgs e)
+        {
+			buttonMove.MoveOutwards();
+
+		}
     }
 }

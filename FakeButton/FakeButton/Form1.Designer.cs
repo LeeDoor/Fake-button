@@ -67,6 +67,7 @@
             this.WrongButton.TabIndex = 1;
             this.WrongButton.Text = "Baiden";
             this.WrongButton.UseVisualStyleBackColor = false;
+            this.WrongButton.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnWrongButtonMouseMove);
             // 
             // Form1
             // 
