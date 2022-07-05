@@ -21,6 +21,8 @@ namespace FakeButton
         /// </summary>
         public double Y { get; set; }
 
+        public double Length { get => Math.Sqrt(Math.Pow(Math.Abs(X), 2) + Math.Pow(Math.Abs(Y), 2)); }
+
         /// <summary>
         /// ctor
         /// </summary>
@@ -69,6 +71,11 @@ namespace FakeButton
                 X = point2.X - point.X,
                 Y = point2.Y - point.Y
             };
+        }
+
+        public static Vector operator +(Vector a, Vector b)
+        {
+            return new Vector(a.X + b.X, a.Y + b.Y);
         }
     }
 }

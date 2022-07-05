@@ -82,7 +82,6 @@
             this.Name = "Form1";
             this.Text = "questionary";
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.OnForm1Paint);
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
             this.ResumeLayout(false);
             this.PerformLayout();

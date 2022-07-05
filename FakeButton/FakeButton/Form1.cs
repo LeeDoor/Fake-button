@@ -14,6 +14,11 @@ namespace FakeButton
 			};
 		}
 
+		public Rectangle ButtonBorder { get; private set; }
+
+		/// <summary>
+		/// button mover and communicator
+		/// </summary>
 		private ButtonMove buttonMove;
 
 		/// <summary>
@@ -23,6 +28,12 @@ namespace FakeButton
 		{
 			InitializeComponent();
 			buttonMove = new ButtonMove(WrongButton, this);
+			ButtonBorder = new Rectangle(
+				WrongButton.Width / 2,
+				WrongButton.Height / 2,
+				Width - WrongButton.Width - 5,
+				Height - WrongButton.Height - 30
+				);
 		}
 
 		/// <summary>
@@ -32,26 +43,26 @@ namespace FakeButton
 		/// <param name="e"></param>
 		private void OnMouseMove(object sender, MouseEventArgs e)
 		{
-			//WrongButton.Text = GetDistance(InMousePosition, WrongButton).ToString();
 			buttonMove.MoveOutwards();
-
 		}
 
-		private void Form1_MouseDown(object sender, MouseEventArgs e)
-		{
-
-		}
-
+		/// <summary>
+		/// help gui drawing
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void OnForm1Paint(object sender, PaintEventArgs e)
 		{
 			e.Graphics.Clear(Color.White);
 			e.Graphics.DrawEllipse(Pens.Red, new Rectangle(
 				WrongButton.Location.X + WrongButton.Width/2 -  (int)buttonMove.reacDist,
 				WrongButton.Location.Y + WrongButton.Height/2 - (int)buttonMove.reacDist,
-				(int)buttonMove.reacDist*2,
-				(int)buttonMove.reacDist *2
+				(int)buttonMove.reacDist* 2,
+				(int)buttonMove.reacDist * 2
 				)
 			);
+
+			e.Graphics.DrawRectangle(Pens.Green, ButtonBorder);
         }
     }
 }

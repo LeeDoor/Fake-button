@@ -10,11 +10,18 @@ namespace FakeButton
 	{
 		public Button button { get; set; }
 		public Form1 form { get; set; }
+		private Point Midpoint { get => new Point()
+		{
+			X = button.Location.X + button.Width / 2,
+			Y = button.Location.Y + button.Height / 2
+		};
+		}
 
 		/// <summary>
 		/// variable gets info about button reaction distance
 		/// </summary>
 		public readonly double reacDist = 100d;
+
 		public ButtonMove(Button button, Form1 form)
         {
             this.button = button;
@@ -31,113 +38,60 @@ namespace FakeButton
 			{
 				return;
 			}
-			Vector backVector = Vector.GetVector(GetControlMidpoint(), form.InMousePosition).Invert();
-			ApplyMovement(backVector);
-
-			FormSides? side = IsOutOfRange();
-
-			if (side != null)
-			{
-				var point = GetClosestBorderPoint(side.Value);
-				ApplyMovement(Vector.GetVector(GetControlMidpoint(), point));
-			}
+			MovingPattern pattern;
+			Vector moving;
+			if (VecToClosestBorder(out Vector vectorA))
+            {
+				Vector vectorB = Vector.GetVector(Midpoint, form.InMousePosition);
+				moving = (vectorA + vectorB).Invert();
+            }
+            else
+            {
+				moving = Vector.GetVector(Midpoint, form.InMousePosition).Invert();
+            }
+			ApplyMovement(moving);
+            if (IsOutOfRange())
+            {
+				ApplyMovement(Vector.GetVector(Midpoint, new Point { X = form.Width / 2, Y = form.Height / 2 }));
+            }
 			form.Invalidate();
 		}
 
-		/// <summary>
-		/// gets closest point which is enough far from cursor
-		/// </summary>
-		/// <param name="side">side, near you are</param>
-		/// <param name="control">control button</param>
-		/// <param name="space">recursivly getting space to count</param>
-		/// <returns>returns far point</returns>
-		private Point GetClosestBorderPoint(FormSides side, int space = 0)
-		{
-			if (space >= reacDist / 2)
-				return new Point()
-				{
-					X = form.Width / 2,
-					Y = form.Height / 2
-				};
-			Point point = new();
-			switch (side)
-			{
-				case FormSides.Left:
-					point = new Point()
-					{
-						X = 0,
-						Y = button.Location.Y + space
-					};
-					break;
-				case FormSides.Right:
-					point = new Point()
-					{
-						X = form.Width,
-						Y = button.Location.Y + space
-					};
-					break;
-				case FormSides.Bottom:
-					point = new Point()
-					{
-						X = button.Location.X + space,
-						Y = form.Height
-					};
-					break;
-				case FormSides.Top:
-					point = new Point()
-					{
-						X = button.Location.X + space,
-						Y = 0
-					};
-					break;
+		private bool IsOutOfRange()
+        {
+			Point pos = Midpoint;
+			Rectangle border = form.ButtonBorder;
+			return !(border.X <= pos.X && pos.X <= border.X+border.Width &&
+				border.Y <= pos.Y && pos.Y <= border.Y + border.Height);
+        }
 
-			}
-			if (GetDistance(form.InMousePosition, point) > reacDist)
-			{
-				return point;
-			}
-			else return GetClosestBorderPoint(side, -(space * +5));
-		}
+        #region vector and point math
 
-		/// <summary>
-		/// gets distance between point and control
-		/// </summary>
-		/// <param name="point">point (mouse position)</param>
-		/// <param name="control">control (button)</param>
-		/// <returns>returns double distance</returns>
-		private double GetDistance(Point point)
+        /// <summary>
+        /// gets distance between point and control
+        /// </summary>
+        /// <param name="point">point (mouse position)</param>
+        /// <param name="control">control (button)</param>
+        /// <returns>returns double distance</returns>
+        private double GetDistance(Point point)
 		{
-			Point point2 = GetControlMidpoint();
+			Point point2 = Midpoint;
 			Vector distance = Vector.GetVector(point, point2).Module();
 			return Math.Sqrt(Math.Pow(distance.X, 2) + Math.Pow(distance.Y, 2));
 		}
 
 		/// <summary>
-		/// gets distance between point and control
+		/// gets distance between two points
 		/// </summary>
 		/// <param name="point">point (mouse position)</param>
 		/// <param name="point2">second point (screen borders)</param>
 		/// <returns>returns double distance</returns>
 		private double GetDistance(Point point, Point point2)
 		{
-			;
 			Vector distance = Vector.GetVector(point, point2).Module();
 			return Math.Sqrt(Math.Pow(distance.X, 2) + Math.Pow(distance.Y, 2));
 		}
 
-		/// <summary>
-		/// gets middle point of control to correctly count distance
-		/// </summary>
-		/// <param name="control">control (button)</param>
-		/// <returns>returns position of middle point</returns>
-		private Point GetControlMidpoint()
-		{
-			return new Point()
-			{
-				X = button.Location.X + button.Width / 2,
-				Y = button.Location.Y + button.Height / 2
-			};
-		}
 
 		/// <summary>
 		/// applies vector to button coordinates
@@ -153,29 +107,24 @@ namespace FakeButton
 			};
 		}
 
-		private FormSides? IsOutOfRange()
-		{
-			Point pos = GetControlMidpoint();
-			// if out of range
-			if (pos.X > form.Width)
-			{
-				return FormSides.Right;
-			}
-			else if (pos.X < 0)
-			{
-				return FormSides.Left;
-			}
-			else if (pos.Y > form.Height)
-			{
-				return FormSides.Bottom;
-			}
-			else if (pos.Y < 0)
-			{
-				return FormSides.Top;
-			}
-			return null;
+		private bool VecToClosestBorder(out Vector res)
+        {
+			List<Vector> distances = new List<Vector>();
+			Rectangle border = form.ButtonBorder;
+			Point midpoint = Midpoint;
+
+			distances.Add(new Vector(0, midpoint.Y - border.Y));
+			distances.Add(new Vector(border.X + border.Width - midpoint.X, 0));
+			distances.Add(new Vector(0, border.Y + border.Height - midpoint.Y));
+			distances.Add(new Vector(midpoint.X - border.X, 0));
+
+			res = distances.OrderBy(n=>n.Length).First();
+
+			return res.Length <= reacDist;
 		}
-	}
+
+        #endregion
+    }
 }
 
 
