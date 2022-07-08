@@ -67,9 +67,11 @@ namespace FakeButton
 		/// <returns>returns itself</returns>
 		public Vector Normalize()
 		{
-			double inc = 100 / (Math.Abs(X) + Math.Abs(Y));
-			X *= inc;
-			Y *= inc;
+			double ls = X * X + Y * Y;
+			double invNorm = (double)100.0d / Math.Sqrt(ls);
+
+			X *= invNorm;
+			Y *= invNorm;
 			return this;
 		}
 
